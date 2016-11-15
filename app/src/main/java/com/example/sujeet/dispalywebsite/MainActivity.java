@@ -27,7 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
+    private String Content;
     TextView uiUpdate;
     static final private String nmber = "prime";
     static final private String Isprime = "isprime";
@@ -43,13 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_main);
+       // setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Display Website");
         uiUpdate = (TextView) findViewById(R.id.textView);
        if (savedInstanceState != null) {
-            uiUpdate.setText(savedInstanceState.getString(nmber));
-    }
-        setSupportActionBar(toolbar);
+           uiUpdate.setText(savedInstanceState.getString(nmber));
+           System.out.println(savedInstanceState.getString(nmber));
+           Content=savedInstanceState.getString(nmber);
+       }else
+       System.out.println("ssss");
+
         final Button GetServerData = (Button) findViewById(R.id.fetch);
 
         GetServerData.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private class LongOperation  extends AsyncTask<String, Void, Void> {
 
         private final HttpClient Client = new DefaultHttpClient();
-        private String Content;
+
         private String Error = null;
         private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
 
