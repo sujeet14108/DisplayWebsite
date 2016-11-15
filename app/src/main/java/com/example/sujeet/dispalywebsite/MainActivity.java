@@ -1,7 +1,11 @@
 package com.example.sujeet.dispalywebsite;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +14,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -38,6 +43,14 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString(nmber, x);
         super.onSaveInstanceState(savedInstanceState);
+    }
+    public boolean isOnline(){
+        ConnectivityManager connectivityManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
+        if(networkInfo!=null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,14 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         private String Error = null;
         private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
+        Dialog s=new Dialog(MainActivity.this);
 
 
 
         protected void onPreExecute() {
-
-            uiUpdate.setText("Output : ");
-            Dialog.setMessage("Downloading source..");
-            Dialog.show();
+            if(isOnline()) {
+                uiUpdate.setText("Output : ");
+                Dialog.setMessage("Downloading source..");
+                Dialog.show();
+            }
+            else
+            {   Toast.makeText(MainActivity.this, "No Internet!!!",
+                    Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
