@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,32 +26,43 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
+    TextView uiUpdate;
+    static final private String nmber = "prime";
+    static final private String Isprime = "isprime";
+
+    String x="";
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(nmber, x);
+        super.onSaveInstanceState(savedInstanceState);
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        uiUpdate = (TextView) findViewById(R.id.textView);
+       if (savedInstanceState != null) {
+            uiUpdate.setText(savedInstanceState.getString(nmber));
+    }
+        setSupportActionBar(toolbar);
         final Button GetServerData = (Button) findViewById(R.id.fetch);
 
         GetServerData.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                // Server Request URL
-                String serverURL = "http://androidexample.com/media/webservice/getPage.php";
 
-                // Create Object and call AsyncTask execute Method
-                new LongOperation().execute(serverURL);
+                new LongOperation().execute();
 
             }
         });
 
     }
 
-
-    // Class with extends AsyncTask class
     private class LongOperation  extends AsyncTask<String, Void, Void> {
 
         private final HttpClient Client = new DefaultHttpClient();
@@ -58,38 +70,20 @@ public class MainActivity extends Activity {
         private String Error = null;
         private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
 
-        TextView uiUpdate = (TextView) findViewById(R.id.textView);
+
 
         protected void onPreExecute() {
-            // NOTE: You can call UI Element here.
 
-            //UI Element
             uiUpdate.setText("Output : ");
             Dialog.setMessage("Downloading source..");
             Dialog.show();
         }
 
-        // Call after onPreExecute method
+
         protected Void doInBackground(String... urls) {
 
 
-             /*   // Call long running operations here (perform background computation)
-                // NOTE: Don't call UI Element here.
 
-                // Server url call by GET method
-                HttpGet httpget = new HttpGet(urls[0]);
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                Content = Client.execute(httpget, responseHandler);
-
-            } catch (ClientProtocolException e) {
-                Error = e.getMessage();
-                cancel(true);
-            } catch (IOException e) {
-                Error = e.getMessage();
-                cancel(true);
-            }
-
-            return null;*/
 try {
     HttpClient client = new DefaultHttpClient();
     HttpGet request = new HttpGet("https://www.iiitd.ac.in/about");
@@ -113,9 +107,7 @@ try {
         }
 
         protected void onPostExecute(Void unused) {
-            // NOTE: You can call UI Element here.
 
-            // Close progress dialog
             Dialog.dismiss();
 
             if (Error != null) {
@@ -126,6 +118,7 @@ try {
 
                 uiUpdate.setText("Output : \n"+Content);
                 System.out.println(Content);
+                x=Content;
 
             }
         }
