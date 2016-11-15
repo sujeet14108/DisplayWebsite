@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -48,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("Display Website");
         uiUpdate = (TextView) findViewById(R.id.textView);
        if (savedInstanceState != null) {
-           uiUpdate.setText(savedInstanceState.getString(nmber));
+           super.onRestoreInstanceState(savedInstanceState);
+           uiUpdate.setText(Html.fromHtml(savedInstanceState.getString(nmber)));
+           x=savedInstanceState.getString(nmber);
            System.out.println(savedInstanceState.getString(nmber));
            Content=savedInstanceState.getString(nmber);
        }else
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             Dialog.show();
         }
 
-
+        @Override
         protected Void doInBackground(String... urls) {
 
 
@@ -110,8 +113,10 @@ try {
             return null;
         }
 
-        protected void onPostExecute(Void unused) {
 
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
             Dialog.dismiss();
 
             if (Error != null) {
@@ -120,8 +125,8 @@ try {
 
             } else {
 
-                uiUpdate.setText("Output : \n"+Content);
-                System.out.println(Content);
+                uiUpdate.setText(Html.fromHtml(Content));
+               System.out.println(Html.fromHtml(Content));
                 x=Content;
 
             }
